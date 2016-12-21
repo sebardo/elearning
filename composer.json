@@ -1,7 +1,7 @@
 {
     "name": "sebardo/elearning",
     "type": "library",
-    "description": "Standar tools for sandbox",
+    "description": "Elearning tools for sandbox",
     "keywords": ["elearning","test"],
     "homepage": "https://github.com/sebardo/elearning",
     "license": "GNU",
@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-	"sebardo/admin": "dev-master",
+	"sebardo/admin": "dev-master"
     },
     "autoload": {
         "psr-4": {"ElearningBundle\\": "ElearningBundle"}
