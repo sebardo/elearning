@@ -1,0 +1,49 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+{% form_theme form 'AdminBundle:Form:fields.html.twig' %}
+
+
+{% block section %}tests{% endblock %}
+
+{% block content %}
+    
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "test.new" | trans }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning.singular" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_index') }}">{{ "test.plural" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_new') }}">{{ "new.singular" | trans }}</a></li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-body">
+                {{ include('ElearningBundle:Test:_form.html.twig', { form: form }) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+            $('#elearning_test_site').select2({
+                placeholder: "",
+                allowClear: true
+            });
+        });
+    </script>
+{% endblock %}

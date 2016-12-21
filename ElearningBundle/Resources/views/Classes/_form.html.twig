@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="box-body">
+        
+        {{ form_row(form.name) }}
+        {{ form_row(form.course) }}
+        {{ form_row(form.students, { 'attr': {'class': 'multi' } }) }}
+        {{ form_row(form.teachers, { 'attr': {'class': 'multi' } }) }}
+    </div>
+        
+    
+    <div class="box-footer">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary btn-flat"><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+            <a href="{{ path('elearning_classes_index') }}" class="btn btn-default btn-flat">{{ "cancel.singular" | trans }}</a>
+        </div>
+    </div>
+    {{ form(form) }}
+{{ form_end(form) }}

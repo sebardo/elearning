@@ -1,0 +1,116 @@
+{% extends core['extended_layout'] ? core['extended_layout'] : 'CoreBundle:Base:base.layout.html.twig' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block container_content %}
+    <div class="container-content">
+        <div class="container">
+            
+            <div class="row actualidad">
+                <div class="revista col-md-12 col-xs-12">
+                    <h1>{{test.name}}</h1>
+                    
+                    <div id="success-message" style="display: none;margin-bottom: 20px" class="alert"></div>
+                    
+                    {% if returnValues|length > 0 %}
+                        <div class="alert alert-info">Este test ya ha sido completado por Ud.</div>
+                    {% endif %}
+                    
+                    Despues de haber leido los apuntes del tema, responde a este cuestionario eligiendo la respuesta correcta.Al final de ejercicio sabras si dominas la materia.
+                    
+                    <div style="clear: both"> </div>
+                    
+                    <ul class="col-md-6" style="display: inline-block; padding-left: 0">
+                    {% for ask in test.asks %}
+                        <li><h4>{{loop.index}}.  <span style="font-weight: bold">{{ask.name}}</span></h4>
+                            <ul class="ask" style="margin: 20px 0px 20px 30px" id="ask-{{ask.id}}">
+                                    {% for answer in ask.answers %}
+                                        <li id="{{answer.id}}"><input name="answer_{{ask.id}}[]" value="{{answer.id}}" type="radio" class="minimal"> {{answer.name}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% if loop.index % ((test.asks|length)/2) == 0%}</ul><ul class="col-md-6" style="display: inline-block; padding-right: 0">{%endif%}
+                    {% endfor %}
+                    </ul>
+                    <div style="clear: both"></div>
+                    <div>
+                        {% if returnValues|length == 0 %}
+                        <a id="test-submit" class="btn btn-flat btn-academy btn-block">FINALIZAR TEST</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    
+           
+{% endblock %}
+
+{% block javascripts %}
+    {{parent()}}
+    <script>
+       $(document).ready(function(){
+           
+           
+               
+            {% for key, value in returnValues %}
+                $('#ask-{{key}} li input').each(function( index ) {
+                    if( $(this).val() == {{value.selected}} ){
+                        $('#{{value.selected}} .iCheck-helper').click();
+                    }
+                    if({{value.selected}} == {{value.correct}}) 
+                        $('#{{value.correct}}').addClass('correct');
+                    else{
+                        $('#{{value.correct}}').addClass('correct');
+                        $('#{{value.selected}}').addClass('no-correct');
+                    }
+                    
+                });
+            {% endfor %}
+
+           $('#test-submit').click(function(){
+                $('#success-message').fadeOut('slow');
+                var asks = {};
+                $('.ask').each(function( index ) {
+                    var id = $( this ).attr('id');
+                    var arr = id.split('-');
+                    var ask = arr[1];
+                    $('#ask-'+ask+' li input').each(function( index ) {
+                        if( $(this).prop("checked") ){
+                            asks[ask] = $(this).val();
+                        }
+                    });
+                });
+                
+                $.ajax({
+                    method: "POST",
+                    url: "{{path('elearning_front_evaluate')}}",
+                    data: {
+                        asks: asks,
+                        test: {{test.id}}
+                    }
+                }).done(function (data) {
+                    $.each( data, function( key, value ) {
+                        if( value.correct == value.selected){
+                            $('#'+value.correct).addClass('correct');
+                        }else{
+                            $('#'+value.selected).addClass('no-correct');
+                            $('#'+value.correct).addClass('correct');
+                        }
+                      });
+                    var text = 'El test se ha completado satisfactoriamente, muchas gracias.';
+                    $('#success-message').text(text);
+                    $('#success-message').addClass('alert-success');
+                    $('#success-message').fadeIn('slow');
+                }).fail(function () {
+                    var text = 'Se haproducido un error, vuelta a intentarlo mas tarde, gracias.'
+                    $('#success-message').text(text);
+                    $('#success-message').addClass('alert-danger');
+                    $('#success-message').fadeIn('slow');
+
+                });
+                //console.log(asks);
+           });
+       });
+    </script>
+{% endblock %}

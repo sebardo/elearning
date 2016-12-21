@@ -1,0 +1,25 @@
+{{ form_start(form) }}
+    <div class="box-body">
+
+       {{ form_row(form.name, { 'label' : 'name' | trans}) }}
+       {{ form_row(form.course, { 'label' : 'course.singular' | trans}) }}
+       {{ form_row(form.active, { 'label' : 'active' | trans}) }}
+   </div>
+ 
+    <div class="box-footer">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary btn-flat"><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+            <a href="{{ path('elearning_test_index') }}" class="btn btn-default btn-flat">{{ "cancel.singular" | trans }}</a>
+            {% if edit is defined and edit%}<button type="submit" class="btn btn-danger btn-flat pull-right" id="delete-btn">{{ "delete" | trans }}</button>{% endif %}
+        </div>
+    </div>
+    {{ form(form) }}
+ 
+{{ form_end(form) }}
+{% if edit is defined and edit%}
+<form id="delete-entity" action="{{ path('elearning_test_delete', { id: entity.id }) }}" method="post">
+    <input type="hidden" name="_method" value="DELETE" />
+    {{ form_widget(delete_form) }}
+</form>
+{% endif %}

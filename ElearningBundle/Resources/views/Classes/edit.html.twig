@@ -1,0 +1,48 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+{% form_theme edit_form 'AdminBundle:Form:fields.html.twig' %}
+
+{% block section %}class{% endblock %}
+{% block content %}
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "edit.singular" | trans }} {{ entity.name }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning" | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_index') }}">{{ "classes.plural" | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_show', { id: entity.id }) }}">{{ entity.name }}</a></li>
+        <li><a href="{{ path('elearning_classes_edit', { id: entity.id }) }}">{{ "edit.singular" | trans }} </a></li>
+      </ol>
+    </section>
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+              {{ include('ElearningBundle:Classes:_form.html.twig', { form: edit_form }) }}
+            </div>
+        </div>       
+      </div>
+    </section>
+
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+            $('#elearning_classes_course').select2({
+                placeholder: "",
+                allowClear: true
+            });
+            
+            $('#elearning_classestype_teachers').multiselectable();
+            
+            $('#elearning_classestype_students').multiselectable();
+        });
+    </script>
+{% endblock %}

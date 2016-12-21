@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+    <div class="box-body">
+
+       {{ form_row(form.name, { 'label' : 'name' | trans}) }}
+       {{ form_row(form.site, { 'label' : 'microsite.singular' | trans}) }}
+
+   </div>
+ 
+    <div class="box-footer">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary btn-flat"><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+            <a href="{{ path('elearning_course_index') }}" class="btn btn-default btn-flat">{{ "cancel.singular" | trans }}</a>
+        </div>
+    </div>
+    {{ form(form) }}
+ 
+{{ form_end(form) }}

@@ -1,0 +1,171 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+
+{% block section %}actors{% endblock %}
+
+{% block content %}
+    
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ entity.name }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning.singular" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_index') }}">{{ "test.plural" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_show', { id: entity.id }) }}">{{ entity.name }}</a></li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+          <div class="col-md-12">
+              
+                {% include 'CoreBundle:Base:alert.messages.html.twig' %}
+              
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="{{ not app.request.get('ask') and 
+                                not app.request.get('results') ? 'active' }}">
+                      <a href="#info_tab" data-toggle="tab">{{ "information" | trans }}</a>
+                  </li>
+                  <li class="{{ app.request.get('ask') ? 'active' }}"><a href="#asks_tab" data-toggle="tab">{{ "ask.plural" | trans }}</a></li>                    
+                  <li class="{{ app.request.get('results') ? 'active' }}"><a href="#results_tab" data-toggle="tab">{{ "test.completed" | trans }}</a></li>                    
+                </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane {{ not app.request.get('ask') ? 'active' }}" id="info_tab">
+                        <div class="box-body show-tables">
+                            <table class="table ">
+                              <tbody>
+                                 <tr>
+                                     <td>Nombre</td>
+                                     <td>{{ entity.name }}</td>
+                                 </tr>
+                                 <tr>
+                                     <td>Curso</td>
+                                     <td>{{ entity.course.name }}</td>
+                                 </tr>
+                                 <tr>
+                                    <td>{{ "active" | trans }}</td>
+                                    <td>
+                                        {% if entity.active %}
+                                            <span class="label label-success">{{ "yes" | trans }}</span>
+                                        {% else %}
+                                            <span class="label label-warning">{{ "no" | trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                             </tbody>
+                            </table>
+                        </div>   
+                        <div class="box-footer">
+                            <a href="{{ path('elearning_test_edit', { id: entity.id }) }}" class="btn btn-primary btn-flat"><i class="icon-edit"></i> {{ "edit.singular" | trans }}</a>
+                            <button type="submit" class="btn btn-danger btn-flat pull-right" id="delete-btn">{{ "delete" | trans }}</button>
+                            <form id="delete-entity" action="{{ path('elearning_test_delete', { 'id': entity.id }) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE" />
+                                {{ form_widget(delete_form) }}
+                            </form>
+                        </div>
+                    </div>
+                     
+                    <div class="tab-pane {{ app.request.get('ask') ? 'active' }}" id="asks_tab">
+                        <div class="box-body show-tables">
+                            <table class="table">
+                                <tbody>
+                                {% for ask in entity.asks %}
+                                    <tr>
+                                        <td>
+                                            {{ ask.id }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('elearning_ask_show', { test: entity.id,  id: ask.id }) }}">
+                                                {{ ask.name }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>   
+                        <div class="box-footer">
+                            <a href="{{ path('elearning_test_edit', { id: entity.id, ask: 1 }) }}" class="btn btn-primary btn-flat"><i class="ion-compose"></i> {{ "edit.singular" | trans }}</a>
+                        </div>
+                    </div>
+                        
+                    <div class="tab-pane {{ app.request.get('results') ? 'active' }}" id="results_tab">
+                        <div class="box-body show-tables">
+                            
+                            <table class="table table-striped table-bordered table-hover" id="actorTests-table">
+                                <thead>
+                                <tr>
+                                    <th class="hidden-480">ID</th>
+                                    <th class="hidden-480">{{ "user.plural" | trans }}</th>
+                                    <th class="hidden-480">{{ "evaluate.date" | trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>   
+                        <div class="box-footer">
+                            <a href="" class="btn btn-primary btn-flat"><i class="ion-compose"></i> {{ "edit.singular" | trans }}</a>
+                        </div>
+                    </div>
+                        
+              </div>
+            </div>
+          </div>
+      </div>
+     </section>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        
+        var features_table_columns = [
+            { "mData": "id" },
+            {
+                "mData": function (source) {
+                    return '<a href="/admin/actor/' + source.actorId + '">' + source.email + '</a>';
+                }
+            },
+            {
+                "mData": function (source) {
+                    if(source.evaluateDate.date != '') {
+                        var arr = source.evaluateDate.date.split('.');
+                        return arr[0];
+                    }else{
+                        return '';
+                    }
+                }
+            }
+        ];
+        
+
+        jQuery(document).ready(function() {
+            $('#delete-btn').on('click', function(e) {
+                e.preventDefault();
+
+                if (confirm('{{ "are.you.sure" | trans }}')) {
+                    $('#delete-entity').submit();
+                }
+            });
+            
+            TableManaged.init(
+                '#actorTests-table',
+                '{{ url('core_test_actorlist', { test: entity.id }) }}',
+                [],
+                features_table_columns,
+                '{{ url('admin_default_getdatatablesi18n', { language: app.request.locale }) }}');
+
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+{% form_theme form 'AdminBundle:Form:fields.html.twig' %}
+
+{% block section %}class{% endblock %}
+{% block content %}
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "classes.new" | trans }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning" | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_index') }}">{{ "classes.plural" | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_new') }}">{{ "new.singular" | trans }}</a></li>
+      </ol>
+    </section>
+       
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-body">
+                {{ include('ElearningBundle:Classes:_form.html.twig', { form: form }) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+           
+{% endblock %}
+            
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+            $('#elearning_classestype_course').select2({
+                placeholder: "",
+                allowClear: true
+            });
+            
+            $('#elearning_classestype_teachers').multiselectable();
+            
+            $('#elearning_classestype_students').multiselectable();
+            
+             $('#elearning_classestype_submit').on('click', function(e) {
+                e.preventDefault();
+
+                if ($('form[name="elearning_classestype"]')[0].checkValidity() ) {
+                    $(this).closest('form').submit();
+                }else{
+                    var a = ["name"];
+                    a.forEach(function(entry) {
+                        if($('#elearning_classestype_'+entry).val() == '')$('.'+entry+' .alert-danger').show();
+                        else $('.'+entry+' .alert-danger').hide();
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

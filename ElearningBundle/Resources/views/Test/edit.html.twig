@@ -1,0 +1,212 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+{% form_theme edit_form 'AdminBundle:Form:fields.html.twig' %}
+
+{% block section %}test{% endblock %}
+
+{% block content %}
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "edit.singular" | trans }} {{ entity.name }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning.singular" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_index') }}">{{ "test.plural" | trans }}</a></li>
+        <li><a href="{{ path('elearning_test_show', { id: entity.id }) }}">{{ entity.name }}</a></li>
+        <li><a href="{{ path('elearning_test_edit', { id: entity.id }) }}">{{ "edit.singular" | trans }} </a></li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+          <div class="col-md-12">  
+        
+            {% include 'CoreBundle:Base:alert.messages.html.twig' %}
+              
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+              <ul class="nav nav-tabs">
+                  <li class="{{ not app.request.get('ask') ? 'active' }}">
+                      <a href="#info_tab" data-toggle="tab">{{ "information" | trans }}</a>
+                  </li>
+                  <li class="{{ app.request.get('ask') ? 'active' }}"><a href="#asks_tab" data-toggle="tab">{{ "ask.plural" | trans }}</a></li>
+              </ul>
+              <div class="tab-content">
+      
+                    <div class="tab-pane {{ not app.request.get('ask') ? 'active' }}" id="info_tab">
+                        <!-- BEGIN FORM -->
+                        {{ include('ElearningBundle:Test:_form.html.twig', { form: edit_form , edit: true}) }}
+                        <!-- END FORM-->
+
+                    </div>
+                    <div class="tab-pane {{ app.request.get('ask') ? 'active' }}" id="asks_tab">
+                    
+                        <!-- BEGIN FORM-->
+                        {{ form_start(asks_form, {
+                                        'action': path('elearning_test_update', { id: entity.id }),
+                                        'method': 'post',
+                                        'attr': { 'class': 'form-horizontal form-row-seperated'}
+                                        } ) }}
+                            <div class="box-body">
+                                <a href="{{ path('elearning_ask_new', { test:entity.id }) }}" class="btn btn-success btn-flat pull-right" style="margin-bottom: 10px">
+                                    {{ "add.ask" | trans }} <i class="ion-plus"></i>
+                                </a>
+                                <a href="{{ path('elearning_ask_sort', { test:entity.id }) }}" class="btn bg-purple btn-flat pull-right" style="margin-bottom: 10px">
+                                    {{ "ask.order" | trans }} <i class="ion-loop"></i>
+                                </a>
+                                <!-- Button trigger modal -->
+                                {#<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                                  {{ "add.ask" | trans }} <i class="ion-plus"></i>
+                                </button>#}
+                                {{ include('ElearningBundle:Test:_asks_form.html.twig', { form: asks_form }) }}
+                                <input type="hidden" name="_method" value="PUT" />
+                                <div style="height: 20px"></div>
+                                {% for ask in entity.asks %}
+                                    <div style="margin: 0;" class="form-group {{ask.slug}} ckedit ckedit-{{ask.id}}" data="{{ask.id}}">
+                                        <div class="box box box-info box-solid">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">{{ask.name}}</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <table style="width: 100%">
+                                                    
+                                                        <tr class="space" {% if  ask.answers | length == 0%}style="display: none"{% endif %}>
+                                                            <th style="width: 100px">¿ Correcto ?</th>
+                                                            <th>Respuestas</th>
+                                                        </tr>
+                                                    
+                                                    {% for value in ask.answers %}
+                                                      <tr> 
+                                                        <td style="text-align: center">
+                                                            <input {{ value.correct ? 'checked="checked"' }} type="radio" id="{{ ask.id ~'_'~ loop.index}}_correct" name="{{ ask.id }}_correct" value="{{value.id}}" >
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control" type="text" id="{{value.id}}_answer" name="{{ask.id}}_answer[{{value.id}}]" value="{{value.name}}">
+                                                        </td>      
+                                                      </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <a {% if  ask.answers | length > 0%}style="margin-top: 10px"{% endif %} class="btn btn-xs btn-success btn-flat add-answer" data="{{ask.id}}">
+                                                            {{ "add.answer" | trans }} <i class="ion-plus"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>    
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary btn-flat"><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+                                <a href="{{ path('elearning_test_show', { id: entity.id, ask: 1 }) }}" class="btn btn-default btn-flat">{{ "cancel.singular" | trans }}</a>
+                            </div>
+                        {{ form_end(asks_form) }}
+
+                        <!-- END FORM-->
+                        
+                    </div>
+              </div>
+            </div><!-- nav-tabs-custom -->
+          </div>
+      </div>
+    </section>   
+                            
+                            
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>                   
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        
+        next = parseInt('{{next_answer}}');
+        
+        function addAnswer(ask){
+            next = (next+1);
+            var html = '<tr><td style="text-align: center"><input type="radio" id="'+ask+'_'+next+'_correct" name="'+ask+'_correct" value="'+next+'" ></td>\n\
+                            <td><input class="form-control" type="text" id="'+ask+'_answer" name="'+ask+'_answer['+next+']"></td></tr>';
+            return html;
+        }
+        
+        jQuery(document).ready(function() {
+            
+            $('.add-answer').click(function(e){
+                var elem = $(this).parent().parent();
+                var ask = $(this).attr('data');
+                var next = elem.parent().find('tr:not(".space")').length;
+                elem.before(addAnswer(ask, next));
+                $('.space').show();
+                console.log(elem);
+            });
+            
+            $('#elearning_test_site').select2({
+                placeholder: "",
+                allowClear: true
+            });
+            
+   
+            $( "#elearningbundle_testask_asks option" ).each(function( index ) {
+                if($( this ).prop( "selected" )){
+                    //console.log( index + ": " + $( this ).val() );
+                    showEditor('ckedit-'+$( this ).val());
+                }
+            });
+            
+            $('#elearningbundle_testask_asks').select2({
+                width: '100%'
+            });
+            function showEditor(id){
+               
+                $('.'+id).fadeIn('slow');
+            }
+            function hideEditor(id){
+                $('.'+id).fadeOut('slow');
+                var elem = $('.'+id);
+                var data = elem.attr('data');
+                var elems = elem.find('input[name="'+data+'_answer[]"]');
+                elems.each(function( index ) {
+                    $(this).val('');
+                });
+            }
+            
+            function addOption(id){
+                var option = '<li class="select2-selection__choice" title="'+id+'"><span class="select2-selection__choice__remove" role="presentation">×</span>'+id+'</li>';
+                $('ul.select2-selection__rendered').append(option);
+            }
+            
+            var $eventSelect = $("#elearningbundle_testask_asks");
+            $eventSelect.on("select2:select", function (e) { 
+                var arr = e.params.data.text.split(' ');
+                showEditor(e.params.data.text);
+            });
+            $eventSelect.on("select2:unselect", function (e) {
+                var arr = e.params.data.text.split(' ');
+                hideEditor(e.params.data.text);
+            });
+        });
+    </script>
+{% endblock %}

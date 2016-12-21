@@ -1,0 +1,40 @@
+elearning: Formación
+
+courses: Cursos
+course:
+  singular: Curso
+  plural: Cursos
+  choose: Elige un 
+  new: Nuevo curso
+  created: Se ha creado el curso satisfactoriamente
+  updated: Se ha editado el curso satisfactoriamente
+  deleted: Se ha eliminado el curso satisfactoriamente
+  
+class: Clases
+classes:
+  singular: Clase
+  plural: Clases
+  choose: Elige una clase
+  new: Nueva clase
+  created: Se ha creado la clase satisfactoriamente
+  updated: Se ha editado la clase satisfactoriamente
+  deleted: Se ha eliminado la clase satisfactoriamente
+  
+tests: Evaluaciones
+test:
+  plural: Evaluaciones
+  singular: Evaluación
+  created: Se ha creado la evaluación satisfactoriamente
+  updated: Se ha actualizado la evaluación satisfactoriamente
+  deleted: Se ha eliminado la evaluación satisfactoriamente  
+  completed: Test completados
+  new: Nueva evaluación
+  
+ask:
+  singular: Pregunta
+  plural: Preguntas
+  order: Ordenar preguntas
+  created: Se ha creado la pregunta satisfactoriamente
+  updated: Se ha actualizado la pregunta satisfactoriamente
+  deleted: Se ha eliminado la pregunta satisfactoriamente  
+  

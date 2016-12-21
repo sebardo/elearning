@@ -1,0 +1,4 @@
+elearning:
+    resource: "@ElearningBundle/Controller/"
+    type:     annotation
+    prefix:   /

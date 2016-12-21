@@ -1,0 +1,88 @@
+{% extends "AdminBundle:Base:layout.html.twig" %}
+
+{% block section %}class{% endblock %}
+{% block content %}
+   
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ entity.name }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "elearning" | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_index') }}">{{ 'classes.plural' | trans }}</a></li>
+        <li><a href="{{ path('elearning_classes_show', { id: entity.id }) }}">{{ entity.name }}</a></li>
+      </ol>
+    </section>
+    <section class="content">
+      <div class="row">
+          <div class="col-md-12">
+              
+              {% include 'CoreBundle:Base:alert.messages.html.twig' %}
+
+              <div class="box">
+                  <div class="box-body show-tables">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Id</td>
+                                <td>{{ entity.id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre</td>
+                                <td>{{ entity.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Curso</td>
+                                <td><a  href="{{ path('elearning_course_show', {'id' : entity.course.id } ) }}">{{ entity.course.name }}</a></td>
+                            </tr>
+                            {% if entity.course.site.name is defined %}
+                            <tr>
+                                <td>Microsite</td>
+                                <td>{{ entity.course.site.name }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Alumnos</td>
+                                <td>{% for student in entity.students  %}<li><a  href="{{ path('core_actor_show', {'id' : student.id } ) }}">{{student.username}}</a></li>{% endfor%}</td>
+                            </tr>
+                            <tr>
+                                <td>Profesores</td>
+                                <td>{% for teacher in entity.teachers  %}<li><a  href="{{ path('core_actor_show', {'id' : teacher.id } ) }}">{{teacher.username}}</a></li>{% endfor%}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+               </div>
+                  <div class="box-footer">
+                        <a href="{{ path('elearning_classes_edit', { id: entity.id }) }}" class="btn btn-primary btn-flat"><i class="icon-edit"></i> {{ "edit.singular" | trans }}</a>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" id="delete-btn">{{ "delete" | trans }}</button>
+                        <form id="delete-entity" action="{{ path('elearning_classes_delete', { 'id': entity.id }) }}" method="post">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            {{ form_widget(delete_form) }}
+                        </form>
+                    </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+      </div>
+     </section>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        
+
+        jQuery(document).ready(function() {
+         
+        });
+
+    </script>
+{% endblock %}
