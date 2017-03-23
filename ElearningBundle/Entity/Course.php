@@ -34,7 +34,7 @@ class Course
     protected $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\CoreBundle\Entity\Site", inversedBy="courses")
+     * @ORM\ManyToOne(targetEntity="\CoreExtraBundle\Entity\Site", inversedBy="courses")
      * @ORM\JoinColumn(nullable=true)
      */
     protected $site;
